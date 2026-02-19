@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="index.css" />
+  <title>400 & Trix</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="chip"></span>
+      <div>
+        <h1>400 & Trix Scoreboard</h1>
+        <p>4 Spieler • Trix nach Regeln • History • Undo</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" id="undoBtn" onclick="undo()" disabled>Undo</button>
+      <button class="btn ghost" id="delLastBtn" onclick="deleteLastRound()" disabled>Delete last round</button>
+      <button class="btn danger" onclick="newGame()">New Game</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- SETTINGS -->
+    <section class="card settings">
+      <div class="grid">
+        <div class="field">
+          <label>Spiel</label>
+          <select id="gameSelect" onchange="onGameChange()">
+            <option value="400">400 (manual)</option>
+            <option value="trix">Trix (auto rules)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Zielpunkte (optional)</label>
+          <input id="targetInput" type="number" placeholder="z.B. 400, 500 ..." />
+        </div>
+
+        <div class="field">
+          <label>Notiz (optional)</label>
+          <input id="noteInput" type="text" placeholder="z.B. Kingdom 2, King war P3 ..." />
+        </div>
+      </div>
+
+      <div class="names">
+        <div class="field"><label>Spieler 1</label><input id="p1Name" value="Player 1" /></div>
+        <div class="field"><label>Spieler 2</label><input id="p2Name" value="Player 2" /></div>
+        <div class="field"><label>Spieler 3</label><input id="p3Name" value="Player 3" /></div>
+        <div class="field"><label>Spieler 4</label><input id="p4Name" value="Player 4" /></div>
+      </div>
+    </section>
+
+    <!-- SCOREBOARD -->
+    <section class="card scoreboard">
+      <div class="scoreTop">
+        <div class="titleRow">
+          <h2>Aktueller Score</h2>
+          <span class="badge" id="leaderBadge">—</span>
+        </div>
+        <p class="muted" id="scoreHint"></p>
+      </div>
+
+      <div class="scoreGrid" id="scoreGrid"></div>
+
+      <!-- 400 input (manual points per player) -->
+      <div class="roundControls" id="roundManual">
+        <div class="field grow">
+          <label>400: Punkte dieser Runde (pro Spieler)</label>
+          <div class="roundInputs" id="manualInputs"></div>
+        </div>
+
+        <div class="roundButtons">
+          <button class="btn" onclick="addRound400()">Add Round</button>
+          <button class="btn ghost" onclick="clearManual()">Clear</button>
+        </div>
+      </div>
+
+      <!-- TRIX input (rules-based) -->
+      <div class="card mini" id="trixPanel" style="display:none;">
+        <div class="miniHead">
+          <h3>Trix – Runde eintragen</h3>
+          <span class="muted">Wähle Spieltyp + Eingabe pro Spieler</span>
+        </div>
+
+        <div class="gridTrix">
+          <div class="field">
+            <label>Spieltyp</label>
+            <select id="trixType" onchange="onTrixTypeChange()">
+              <option value="king">1) King of Hearts</option>
+              <option value="queens">2) Queens</option>
+              <option value="diamonds">3) Diamonds</option>
+              <option value="luto">4) Luto (Stiche)</option>
+              <option value="trix">5) Trix (Platz)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Input-Hilfe</label>
+            <div class="helperBox" id="trixHelpText">—</div>
+          </div>
+        </div>
+
+        <div class="error" id="trixError" style="display:none;"></div>
+
+        <!-- Counts mode -->
+        <div id="trixCountsBlock">
+          <div class="field">
+            <label>Counts pro Spieler</label>
+            <div class="roundInputs" id="trixCountInputs"></div>
+          </div>
+
+          <div class="row smallRow">
+            <button class="btn ghost" onclick="fillZeros('trixCountInputs')">Set all 0</button>
+          </div>
+        </div>
+
+        <!-- Ranking mode -->
+        <div id="trixRankBlock" style="display:none;">
+          <div class="field">
+            <label>Platz pro Spieler (1..4)</label>
+            <div class="roundInputs" id="trixRankInputs"></div>
+          </div>
+
+          <div class="row smallRow">
+            <button class="btn ghost" onclick="autoRankHint()">Auto: 1,2,3,4</button>
+            <button class="btn ghost" onclick="fillZeros('trixRankInputs')">Clear</button>
+          </div>
+        </div>
+
+        <div class="roundButtons">
+          <button class="btn" onclick="addRoundTrix()">Add Trix Round</button>
+          <button class="btn ghost" onclick="clearTrix()">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="card history">
+      <div class="historyHead">
+        <h2>History</h2>
+        <p class="muted">Jede Runde wird gespeichert (inkl. Typ bei Trix).</p>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead id="historyHeadRow"></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="index.js"></script>
+</body>
+</html>
